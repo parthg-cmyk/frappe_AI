@@ -100,4 +100,7 @@ mcp.add_tool(tax_tool)
 # Register endpoint
 @mcp.register(allow_guest=True)
 def handle_mcp():
-    return mcp.handle(frappe.request , frappe.response)
+    import todo_app.tools.item_tools
+    import todo_app.tools.stock_tools
+    import todo_app.tools.customers
+    # return mcp.handle(frappe.request , frappe.response)

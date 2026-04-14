@@ -1,7 +1,7 @@
 app_name = "todo_app"
-app_title = "Todo App"
+app_title = "My MCP App"
 app_publisher = "Parth"
-app_description = "This is a ToDo app"
+app_description = "MCP tools for ERPNext"
 app_email = "parth.g@sanskartechnolab.com"
 app_license = "mit"
 
