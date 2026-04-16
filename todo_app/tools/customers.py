@@ -11,6 +11,9 @@ def get_customer_insights(customer_name: str):
     Args:
         customer_name (str): Id or Name of the customer, which can refer to an individual person, company, or organization.
     """
+    if not frappe.db.exists("Customer", customer_name):
+        raise frappe.DoesNotExistError(f"Customer '{customer_name}' not found")
+
     # Customer details
     customer = frappe.get_doc("Customer", customer_name)
 

@@ -38,7 +38,7 @@ def get_item_details(item_code: str):
         item_code: The item code to look up
     """
     if not frappe.db.exists("Item", item_code):
-        return {"error": f"Item {item_code} not found"}
+        raise frappe.DoesNotExistError(f"Item '{item_code}' not found")
 
     item = frappe.get_doc("Item", item_code)
 
