@@ -4,6 +4,8 @@ from frappe_mcp import Tool, ToolAnnotations
 
 mcp = frappe_mcp.MCP("mcp")
 
+# --- ToDo tools ---
+
 @mcp.tool()
 def get_todos(status: str = "Open"):
     """Fetch all TODO items with the specified status.
@@ -46,8 +48,8 @@ def create_todo(description: str, priority: str = "Medium"):
         "priority": priority,
         "status": "Open"
     })
-    todo.insert()
-    
+    todo.insert(ignore_permissions=True)  # TODO: remove this and enforce role-based access in production
+
     return {"success": True, "todo_id": todo.name}
 
 @mcp.tool()
@@ -59,8 +61,8 @@ def mark_done(todo_id: str):
     """
     todo = frappe.get_doc("ToDo", todo_id)
     todo.status = "Closed"
-    todo.save()
-    
+    todo.save(ignore_permissions=True)  # TODO: remove this and enforce role-based access in production
+
     return {"success": True, "message": f"TODO {todo_id} marked as done"}
 
 # --- Tutorial examples ---
