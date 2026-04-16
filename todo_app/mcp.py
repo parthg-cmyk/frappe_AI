@@ -64,13 +64,17 @@ def mark_done(todo_id: str):
     
     return {"success": True, "message": f"TODO {todo_id} marked as done"}
 
+# --- Tutorial examples ---
+
 @mcp.tool()
 def simple_tool(param1 : str):
     return {"result":param1}
 
 @mcp.tool(name="custom_name")
-def param_tool(param: str):    
+def param_tool(param: str):
     return {"result": param}
+
+# --- Using mcp.add_tool() ---
 
 def calculate_tax(amount: float, tax_rate: float):
     """Calculate tax on an amount."""
@@ -93,14 +97,15 @@ tax_tool = Tool(
     fn=calculate_tax
 )
 
-# Register tool
 mcp.add_tool(tax_tool)
 
-
-# Register endpoint
-@mcp.register(allow_guest=True)
+# --- App tools ---
+# Using frappe.whitelist directly instead of mcp.register() to avoid a bug
+# where mcp.register()'s inner wrapper loses __module__, causing Frappe v17
+# to fail when resolving the app name for type validation.
+@frappe.whitelist(allow_guest=True)
 def handle_mcp():
     import todo_app.tools.item_tools
     import todo_app.tools.stock_tools
     import todo_app.tools.customers
-    # return mcp.handle(frappe.request , frappe.response)
+    return mcp.handle(frappe.request, frappe.response)
