@@ -24,7 +24,12 @@ class MCPClient:
 			self.base_url, json=payload, headers={"Content-Type": "application/json"}
 		)
 		response.raise_for_status()
-		return response.json()
+		data = response.json()
+		# Frappe's API envelope wraps the raw response body as {"data": "...", "mimetype": ..., "status_code": ...}.
+		# Older Frappe versions return the MCP JSON-RPC response directly. Detect and unwrap accordingly.
+		if "status_code" in data and "data" in data:
+			data = json.loads(data["data"])
+		return data
 
 	def initialize(self) -> dict:
 		result = self._send_request(
