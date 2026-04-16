@@ -64,8 +64,6 @@ def create_customer(
     """
 
     try:
-        frappe.set_user("Administrator")
-
         # ✅ Normalize input
         customer_type = customer_type.capitalize()
 
@@ -107,7 +105,7 @@ def create_customer(
             }
         )
 
-        customer.insert(ignore_permissions=True)
+        customer.insert(ignore_permissions=True)  # TODO: remove this and enforce role-based access in production
         frappe.db.commit()
 
         return json.loads(

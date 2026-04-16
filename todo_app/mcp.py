@@ -103,7 +103,7 @@ mcp.add_tool(tax_tool)
 # Using frappe.whitelist directly instead of mcp.register() to avoid a bug
 # where mcp.register()'s inner wrapper loses __module__, causing Frappe v17
 # to fail when resolving the app name for type validation.
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist(allow_guest=True)  # TODO: replace with OAuth once configured
 def handle_mcp():
     import todo_app.tools.item_tools
     import todo_app.tools.stock_tools

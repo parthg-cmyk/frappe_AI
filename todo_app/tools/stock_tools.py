@@ -10,7 +10,7 @@ def get_stock_balance(item_code: str, warehouse: Optional[str] = None):
 
     from erpnext.stock.utils import get_stock_balance as erp_get_stock_balance
 
-    frappe.set_user("Administrator")
+    # TODO: calling user must have Stock User role
     try:
         if warehouse:
             balance = erp_get_stock_balance(item_code, warehouse)

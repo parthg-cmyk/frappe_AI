@@ -78,7 +78,7 @@ def create_item(item_code:str, item_name: str, item_group: str, stock_uom: str =
                 "is_stock_item": 1,
             }
         )
-        item.insert(ignore_permissions=True)
+        item.insert(ignore_permissions=True)  # TODO: remove this and enforce role-based access in production
         frappe.db.commit()
 
         return json.loads(
