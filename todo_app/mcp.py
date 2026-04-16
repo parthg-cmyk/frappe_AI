@@ -6,6 +6,11 @@ mcp = frappe_mcp.MCP("mcp")
 
 @mcp.tool()
 def get_todos(status: str = "Open"):
+    """Fetch all TODO items with the specified status.
+
+    Args:
+        status: Filter by status (Open, Closed, or All)
+    """
     import frappe
     
     if status == "All":

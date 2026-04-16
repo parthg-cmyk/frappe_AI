@@ -6,7 +6,12 @@ import json
 
 @mcp.tool()
 def get_stock_balance(item_code: str, warehouse: Optional[str] = None):
-    """Get current stock balance for an item."""
+    """Get current stock balance for an item.
+
+    Args:
+        item_code: The item code
+        warehouse: Optional specific warehouse (returns all if not specified)
+    """
 
     from erpnext.stock.utils import get_stock_balance as erp_get_stock_balance
 

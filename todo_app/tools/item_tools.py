@@ -63,6 +63,7 @@ def create_item(item_code:str, item_name: str, item_group: str, stock_uom: str =
     """Create a new item in the system.
 
     Args:
+        item_code: Unique item code
         item_name: Name of the item
         item_group: Item group classification
         stock_uom: Unit of measurement (default: Nos)
