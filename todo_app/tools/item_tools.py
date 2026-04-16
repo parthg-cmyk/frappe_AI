@@ -1,7 +1,5 @@
-# # inventory_app/inventory_app/tools/item_tools.py
 from todo_app.mcp import mcp
 import frappe
-import json
 
 
 @mcp.tool()
@@ -24,10 +22,7 @@ def search_items(search_term: str, item_group: str = None):
         limit=20,
     )
 
-    response = json.loads(
-        json.dumps({"items": items, "count": len(items)}, default=str)
-    )
-    return response
+    return frappe.parse_json(frappe.as_json({"items": items, "count": len(items)}))
 
 
 @mcp.tool()
@@ -42,20 +37,15 @@ def get_item_details(item_code: str):
 
     item = frappe.get_doc("Item", item_code)
 
-    return json.loads(
-        json.dumps(
-            {
-                "item_code": item.name,
-                "item_name": item.item_name,
-                "description": item.description,
-                "item_group": item.item_group,
-                "stock_uom": item.stock_uom,
-                "standard_rate": item.standard_rate,
-                "is_stock_item": item.is_stock_item,
-            },
-            default=str,
-        )
-    )
+    return frappe.parse_json(frappe.as_json({
+        "item_code": item.name,
+        "item_name": item.item_name,
+        "description": item.description,
+        "item_group": item.item_group,
+        "stock_uom": item.stock_uom,
+        "standard_rate": item.standard_rate,
+        "is_stock_item": item.is_stock_item,
+    }))
 
 
 @mcp.tool()
@@ -80,18 +70,12 @@ def create_item(item_code:str, item_name: str, item_group: str, stock_uom: str =
             }
         )
         item.insert(ignore_permissions=True)  # TODO: remove this and enforce role-based access in production
-        frappe.db.commit()
 
-        return json.loads(
-            json.dumps(
-                {
-                    "success": True,
-                    "item_code": item.name,
-                    "message": f"Item {item.name} created successfully",
-                },
-                default=str,
-            )
-        )
+        return frappe.parse_json(frappe.as_json({
+            "success": True,
+            "item_code": item.name,
+            "message": f"Item {item.name} created successfully",
+        }))
 
     except Exception as e:
         return {"success": False, "error": frappe.get_traceback() or repr(e)}

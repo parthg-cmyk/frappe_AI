@@ -1,6 +1,5 @@
 from todo_app.mcp import mcp
 import frappe
-import json
 from typing import Optional
 
 
@@ -109,19 +108,13 @@ def create_customer(
         )
 
         customer.insert(ignore_permissions=True)  # TODO: remove this and enforce role-based access in production
-        frappe.db.commit()
 
-        return json.loads(
-            json.dumps(
-                {
-                    "success": True,
-                    "customer_id": customer.name,
-                    "customer_type": erp_customer_type,
-                    "message": f"Customer {customer_name} created successfully",
-                },
-                default=str,
-            )
-        )
+        return frappe.parse_json(frappe.as_json({
+            "success": True,
+            "customer_id": customer.name,
+            "customer_type": erp_customer_type,
+            "message": f"Customer {customer_name} created successfully",
+        }))
 
     except Exception:
         return {"success": False, "error": frappe.get_traceback()}

@@ -1,7 +1,6 @@
 from typing import Optional
 from todo_app.mcp import mcp
 import frappe
-import json
 
 
 @mcp.tool()
@@ -59,9 +58,4 @@ def get_low_stock_items(threshold: int = 10):
         as_dict=True,
     )
 
-    return json.loads(
-        json.dumps(
-            {"threshold": threshold, "count": len(low_stock), "items": low_stock},
-            default=str,
-        )
-    )
+    return frappe.parse_json(frappe.as_json({"threshold": threshold, "count": len(low_stock), "items": low_stock}))

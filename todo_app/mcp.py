@@ -11,8 +11,6 @@ def get_todos(status: str = "Open"):
     Args:
         status: Filter by status (Open, Closed, or All)
     """
-    import frappe
-    
     if status == "All":
         todos = frappe.get_all("ToDo", fields=["name", "description", "status"])
     else:
@@ -42,8 +40,6 @@ def create_todo(description: str, priority: str = "Medium"):
         description: The TODO description
         priority: Priority level (Low, Medium, High)
     """
-    import frappe
-    
     todo = frappe.get_doc({
         "doctype": "ToDo",
         "description": description,
@@ -61,8 +57,6 @@ def mark_done(todo_id: str):
     Args:
         todo_id: The ID of the TODO item to complete
     """
-    import frappe
-    
     todo = frappe.get_doc("ToDo", todo_id)
     todo.status = "Closed"
     todo.save()
