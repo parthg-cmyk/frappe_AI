@@ -1,4 +1,5 @@
 import json
+import os
 import requests
 from typing import Any, Optional
 
@@ -52,20 +53,22 @@ class MCPClient:
 
 
 class GroqToolInvoker:
-	def __init__(self, mcp_client: MCPClient, model: str = "llama-3.3-70b-versatile"):
+	def __init__(self, mcp_client: MCPClient, api_key: str, model: str = "llama-3.3-70b-versatile"):
 		self.base_url = "https://api.groq.com/openai/v1"
+		self.api_key = api_key
 		self.model = model
 		self.mcp = mcp_client
 		self.tools = []
-		self.system_prompt = """You have access to tools via the MCP server. 
-When the user asks something that requires data or actions, use the available tools.
-Available tools: get_todos, create_todo, mark_done, calculate_tax, search_items, get_item_details, create_item, get_stock_balance, get_low_stock_items
-Always respond clearly with the results from the tools.
-If no tool is needed, just answer directly."""
 
 	def setup(self):
 		self.mcp.initialize()
 		self.tools = self.mcp.list_tools()
+		tool_names = ", ".join(t["name"] for t in self.tools)
+		self.system_prompt = f"""You have access to tools via the MCP server.
+When the user asks something that requires data or actions, use the available tools.
+Available tools: {tool_names}
+Always respond clearly with the results from the tools.
+If no tool is needed, just answer directly."""
 		return self.tools
 
 	def _format_tools_for_groq(self) -> list[dict]:
@@ -150,12 +153,14 @@ If no tool is needed, just answer directly."""
 
 
 def main():
-	import os
-
-	MCP_URL = os.environ.get("MCP_URL", "http://localhost:8001/api/method/todo_app.mcp.handle_mcp")
+	MCP_URL = os.environ.get("MCP_URL")  # TODO: use https:// in production
 	GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 	GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
 
+	if not MCP_URL:
+		print("Error: MCP_URL environment variable not set")
+		print("Set it with: export MCP_URL=http://<your-site>/api/method/todo_app.mcp.handle_mcp")
+		return
 	if not GROQ_API_KEY:
 		print("Error: GROQ_API_KEY environment variable not set")
 		print("Set it with: export GROQ_API_KEY=your_api_key")
@@ -167,8 +172,7 @@ def main():
 
 	print(f"Connecting to MCP server: {MCP_URL}")
 	mcp = MCPClient(MCP_URL)
-	invoker = GroqToolInvoker(mcp, GROQ_MODEL)
-	invoker.api_key = GROQ_API_KEY
+	invoker = GroqToolInvoker(mcp, GROQ_API_KEY, GROQ_MODEL)
 
 	print(f"Using Groq model: {GROQ_MODEL}")
 	print("Fetching available tools...")
