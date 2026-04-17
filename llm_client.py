@@ -175,15 +175,19 @@ def main():
 	invoker = GroqToolInvoker(mcp, GROQ_API_KEY, GROQ_MODEL)
 
 	print(f"Using Groq model: {GROQ_MODEL}")
-	print("Fetching available tools...")
-	tools = invoker.setup()
-	print(f"Found {len(tools)} tools:")
-	for tool in tools:
-		print(f"  - {tool['name']}")
+	invoker.setup()
 
 	print("\n" + "=" * 50)
 	print("Chat with the LLM (type 'quit' to exit)")
-	print("=" * 50 + "\n")
+	print("=" * 50)
+	print("\nTry asking:")
+	print("  - Show me all open todos")
+	print("  - Create a todo to review the quarterly report")
+	print("  - What items are low on stock?")
+	print("  - Calculate 18% tax on 5000")
+	print("  - Search for items containing 'laptop'")
+	print("  - Show insights for customer Acme Corp")
+	print()
 
 	while True:
 		try:
